@@ -17,6 +17,7 @@ class PvOutput():
 		print(payload)
 		r=requests.post(url=url,headers=self.headers,data=payload)
 		print r.text
+
 	def fromSenseOutput(self, trend):
 		peak = trend.get_peak_production()
 		payload = {
