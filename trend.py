@@ -31,4 +31,17 @@ class SenseTrend():
 	def get_daily_contribution(self):
 		return self.data['to_grid']*1000
 
+	def get_peak_production(self):
+		high = 0
+		hour = 0
+		for step_index, value in enumerate(self.data['production']['totals']):
+			if value > high:
+				high = value
+				hour = step_index
+			
+		return { "time": str(hour) + ':00', "value": high*1000 }
+
+	def get_date_as(self, format):
+		return self.start.strftime(format)
+
 
