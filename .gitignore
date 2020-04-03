@@ -1,4 +1,4 @@
-
 *.pyc
 test.py
-.idea/*.env
+.idea/
+*.env
