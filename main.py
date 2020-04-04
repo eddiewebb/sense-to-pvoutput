@@ -1,6 +1,5 @@
 import sys
 import datetime
-import pytz
 from trend import SenseTrend
 from pvoutput import PvOutput
 
@@ -15,7 +14,7 @@ def main():
 		process(trend, day)
 	elif len(sys.argv) == 5:
 		# process startng at date N times.
-		start_day = datetime.datetime(year=int(sys.argv[1]), month=int(sys.argv[2]), day=int(sys.argv[3])).replace(tzinfo=pytz.timezone("America/New_York"))
+		start_day = datetime.datetime(year=int(sys.argv[1]), month=int(sys.argv[2]), day=int(sys.argv[3]))
 		print("Loading " + sys.argv[4] + " days of data starting on " +  start_day.strftime('%Y-%m-%d'))
 		for i in range(int(sys.argv[4])):
 			target_day = start_day + datetime.timedelta(days = i)
@@ -23,7 +22,7 @@ def main():
 			process(trend, target_day)
 	elif len(sys.argv) == 1:
 		# just yesterday
-		now = datetime.datetime.now().replace(tzinfo=pytz.timezone("America/New_York"))
+		now = datetime.datetime.now()
 		yesterday = now - datetime.timedelta(days = 1)
 		process(trend, yesterday)
 	else:
@@ -34,7 +33,7 @@ def main():
 
 
 def process(trend, when):
-	trend.load_trends_for(when + datetime.timedelta(hours=5))
+	trend.load_trends_for(when)
 	pv = PvOutput()
 	pv.postOutput(trend.asHistorical())
 

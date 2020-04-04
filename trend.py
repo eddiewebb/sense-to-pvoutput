@@ -1,4 +1,5 @@
 import os
+import time
 import datetime
 import pytz
 import requests
@@ -15,12 +16,11 @@ class SenseTrend():
 		self.sense = sense_energy.Senseable(api_timeout=10)
 		self.sense.authenticate(user, passwd)
 
-
 	def load_trends_for(self, when):
 		self.start=when 
-		asString = self.start.strftime('%Y-%m-%dT%X')
+		asString = self.get_sense_start().strftime('%Y-%m-%dT%X')
 		print("Date used with sense: " + asString)
-		self.data=self.sense.api_call('app/history/trends?monitor_id=50403&scale=DAY&start=' + asString )
+		self.data=self.sense.api_call('app/history/trends?monitor_id=' + str(self.sense.sense_monitor_id) + '&scale=DAY&start=' + asString )
 		#print(self.data)
 
 	def asHistorical(self):
@@ -36,29 +36,16 @@ class SenseTrend():
 		}
 		return payload
 
-
-	def asLive(self):
-		peak = self.get_peak_production()
-		payload = {
-			"d":self.get_date_as('%Y%m%d'),
-			"t":self.get_date_as('%H:%M'),
-			"v1":self.get_daily_production(),
-			#"v2":9000,
-			"v3":self.get_daily_consumption()
-			#"v4":800
-		}
-		return payload
-
-
-
-
-
-
-
+	#
+	# Sense api errors with UTC offset, you have to muck the start time to incorpoarte TC offset.
+	def get_sense_start(self):
+		is_dst = time.daylight and time.localtime().tm_isdst > 0
+		utc_offset =  (time.altzone if is_dst else time.timezone)
+		print("Local utc offset including DST imapct is : " + str(utc_offset))
+		return self.start + datetime.timedelta(seconds = utc_offset)
 
 	def get_daily_import(self):
 		return self.data['from_grid']*1000
-
 
 	def get_daily_production(self):
 		return self.data['production']['total']*1000
