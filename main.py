@@ -11,20 +11,21 @@ def main():
 
 	if len(sys.argv) == 4:   
 		# specific date
-		process(trend, int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
+		day = datetime.datetime(year=int(sys.argv[1]), month=int(sys.argv[2]), day=int(sys.argv[3]))
+		process(trend, day)
 	elif len(sys.argv) == 5:
 		# process startng at date N times.
-		start_day = datetime.datetime(year=int(sys.argv[1]), month=int(sys.argv[2]), day=int(sys.argv[3]))
+		start_day = datetime.datetime(year=int(sys.argv[1]), month=int(sys.argv[2]), day=int(sys.argv[3])).replace(tzinfo=pytz.timezone("America/New_York"))
 		print("Loading " + sys.argv[4] + " days of data starting on " +  start_day.strftime('%Y-%m-%d'))
 		for i in range(int(sys.argv[4])):
 			target_day = start_day + datetime.timedelta(days = i)
 			print(target_day)
-			process(trend, target_day.year, target_day.month, target_day.day)
+			process(trend, target_day)
 	elif len(sys.argv) == 1:
 		# just yesterday
 		now = datetime.datetime.now().replace(tzinfo=pytz.timezone("America/New_York"))
 		yesterday = now - datetime.timedelta(days = 1)
-		process(trend, yesterday.year, yesterday.month, yesterday.day)
+		process(trend, yesterday)
 	else:
 		#invalid
 		print("INvalid arguments.")
@@ -32,10 +33,10 @@ def main():
 
 
 
-def process(trend, year, month, day):
-	trend.load_trends_for(year, month, day)
+def process(trend, when):
+	trend.load_trends_for(when + datetime.timedelta(hours=5))
 	pv = PvOutput()
-	pv.fromSenseOutput(trend)
+	pv.postOutput(trend.asHistorical())
 
 if __name__ == '__main__':
 	print('Sense data export starting')

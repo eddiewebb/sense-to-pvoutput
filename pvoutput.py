@@ -18,14 +18,11 @@ class PvOutput():
 		r=requests.post(url=url,headers=self.headers,data=payload)
 		print r.text
 
-	def fromSenseOutput(self, trend):
-		peak = trend.get_peak_production()
-		payload = {
-			"c":trend.get_daily_consumption(),
-			"e":trend.get_daily_contribution(),
-			"g":trend.get_daily_production(),
-			"d":trend.get_date_as('%Y%m%d'),
-			"pp":peak['value'],
-			"pt":peak['time']
-		}
-		self.postOutput(payload)
+	def postLive(self, payload):
+		url = "https://pvoutput.org/service/r2/addstatus.jsp"
+		print("sending payload as:")
+		print(payload)
+		r=requests.post(url=url,headers=self.headers,data=payload)
+		print r.text
+
+	
