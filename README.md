@@ -1,17 +1,26 @@
 # pvoutput.org loader for Sense users.
 
-This is intended to *backfill* missing data in PVOutput from Sense Energy Monitor.
-
-**For live updates, use (sense-show)[https://github.com/eddiewebb/sense-show/blob/master/pvoutput.py] instead.**
-
-
 ## Setup
 1) Create a `.env` file or environment vairables containing API keys for sense and pvoutput.org
 2) use pipenv to install dependencies in pipfile.
 3) Run commands below
 
 
-## Commands
+## Live Status Loads
+**NOTE:** Sense totals are only updates hourly, live data can be sent every 5 or 15 minutes.
+
+### Via Cron
+The live.py file will load generation and consumpotion currents and totals, along with line voltage.
+
+```
+*/15 * * * * /usr/bin/python3 /WHEREVERYOUSAVETHIS/live.py 
+```
+
+![Live Status at 5 Minute Interval](/assets/live.png)
+
+
+
+## Backfilling
 
 ### Backfill one day
 
@@ -35,6 +44,10 @@ pipenv run python main.py 2020 02 01 29 #leap year!
 # no argument run
 pipenv run python main.py
 ```
+
+
+![Backfille months of data](/assets/backfill.png)
+
 
 
 ## Authentication
