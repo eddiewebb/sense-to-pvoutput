@@ -7,7 +7,9 @@
 
 
 ## Live Status Loads
-**NOTE:** Sense totals are only updates hourly, live data can be sent every 5 or 15 minutes.
+
+**NOTE:** live data (current watts generated, consumed, to/from grid, voltage) can be sent every 5 or 15 minutes.
+**Daily Totals are only updated hourly** this is a limitation of sense, and will match their API/UI.
 
 ### Via Cron
 The live.py file will load generation and consumpotion currents and totals, along with line voltage.
